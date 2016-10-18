@@ -27,21 +27,21 @@ public class Client2Python {
 			client2Python.setMessage("测试消息0001");
 			client2Python.setLength(client2Python.getMessage().getBytes("UTF-8").length);
 			
-			byte[] b = new byte[11];
-			byte[] br = new byte[64];
+			byte[] b = new byte[1024];
+			byte[] br = new byte[1024];
 			byte[] temp;
 			Socket clientSocket = new Socket("127.0.0.1", 9999);
 			InputStream is = clientSocket.getInputStream();
 			OutputStream os = clientSocket.getOutputStream();
 			b[0] = client2Python.getStart();
 			temp = toLH(client2Python.getLength());
-			System.out.println(client2Python.getLength());
 			System.arraycopy(temp, 0, b, 1, temp.length);
 			byte[] codes = client2Python.getCode().getBytes("UTF-8");
 			System.arraycopy(codes, 0, b, 1+temp.length, codes.length);
-//			byte[] messages = client2Python.getMessage().getBytes("UTF-8");
-//			System.arraycopy(messages, 0, b,1+temp.length+codes.length, messages.length);
-//			b[temp.length+codes.length+messages.length+1] = client2Python.getEnd();
+			byte[] messages = client2Python.getMessage().getBytes("UTF-8");
+			System.arraycopy(messages, 0, b,1+temp.length+codes.length, messages.length);
+			b[temp.length+codes.length+messages.length+1] = client2Python.getEnd();
+			
 			os.write(b);
 			int len=0;
 			while((len=is.read(br))!=-1){
